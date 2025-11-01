@@ -1,0 +1,20 @@
+<div class="container card p-4 w-50 mx-auto mt-5 shadow-sm rounded-3">
+  <h2 class="mb-4">
+    <mat-icon color="primary">category</mat-icon>
+    {{ categoryId ? 'Edit Category' : 'Add Category' }}
+  </h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field appearance="outline" class="w-100 mb-4">
+      <mat-label>Category Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+
+    <div class="d-flex justify-content-between">
+      <button mat-raised-button color="primary" type="submit">
+        {{ categoryId ? 'Update' : 'Create' }}
+      </button>
+      <button mat-stroked-button color="warn" type="button" (click)="cancel()">Cancel</button>
+    </div>
+  </form>
+</div>
