@@ -1,23 +1,17 @@
 ⚙️ Setup Instructions
 
-Clone the Repository
-git clone https://github.com/yourusername/LibraryManagementSystem.git
-Open Library.sln in Visual Studio 2022
-Set Library.API as the startup project
-Create a SQL Server database named LibraryDB
-Run the provided table + stored procedure scripts from the DatabaseScripts folder
-cd Library.API
-dotnet run
-Swagger UI
-Run FrontEnd
-cd library-frontend
-npm install
-ng serve
-////////////////////////
--- =============================================
--- ?? Library Database Structure (By: Murad Abulubbad)
--- =============================================
+1) Clone the Repository
+git clone  https://github.com/murad-abulubbad/Library_-Management
+cd LibraryManagementSystem
+2) Open the Solution in Visual Studio
 
+Open Library.sln using Visual Studio 2022
+
+Set Library.API as the Startup Project
+
+3) Database Setup (SQL Server)
+
+Run the following script in SQL Serve
 USE master;
 GO
 
@@ -28,11 +22,7 @@ GO
 USE LibraryDB;
 GO
 
--- =============================================
--- 1?? TABLES
--- =============================================
-
--- ?? Books
+-- Books Table
 CREATE TABLE Books (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     Title NVARCHAR(200) NOT NULL,
@@ -41,14 +31,14 @@ CREATE TABLE Books (
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
--- ?? Categories
+-- Categories Table
 CREATE TABLE Categories (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(200) NOT NULL,
     CreatedAt DATETIME DEFAULT GETDATE()
 );
 
--- ?? BookCategories (Many-to-Many)
+-- BookCategories (Many-to-Many)
 CREATE TABLE BookCategories (
     Id BIGINT IDENTITY(1,1) PRIMARY KEY,
     BookId BIGINT NOT NULL,
@@ -57,10 +47,7 @@ CREATE TABLE BookCategories (
     CONSTRAINT FK_BookCategories_Category FOREIGN KEY (CategoryId) REFERENCES Categories(Id) ON DELETE CASCADE
 );
 
--- =============================================
--- 3?? STORED PROCEDURE
--- =============================================
-
+-- Stored Procedure to return books with categories
 IF OBJECT_ID('sp_GetAllBooksWithCategories', 'P') IS NOT NULL
     DROP PROCEDURE sp_GetAllBooksWithCategories;
 GO
@@ -81,6 +68,72 @@ BEGIN
     ORDER BY b.Id;
 END;
 GO
+cd Library.API
+dotnet run
+https://localhost:{API_PORT}/swagger
+🗄️ Database Connection (Connection String Setup)
+
+After creating the database, you need to configure the SQL Server connection string in the backend.
+
+Open:
+Library.API/appsettings.json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=LibraryDB;Trusted_Connection=True;TrustServerCertificate=True;"
+}
+🔹 If you're using SQL Server Authentication, use:
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=LibraryDB;User Id=sa;Password=YourPassword;TrustServerCertificate=True;"
+}
+🔗 Apply Connection String in Program.cs
+
+Ensure EF Core is using the correct DB connectio
+builder.Services.AddDbContext<LibraryDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    🌐 Network & API Endpoint Configuration (Frontend → Backend)
+
+Because frontend and backend run on different ports, we define the API URL in Angular.
+
+Open:
+export const environment = {
+  production: false,
+  apiUrl: 'https://localhost:7229/api'
+};
+Make sure the port matches your backend Swagger URL.
+### 🏗️ (Optional) Create Database Using EF Core Migration
+
+Instead of running the SQL script manually, you can generate the database using Entity Framework migrations:
+
+1) Open Package Manager Console
+2) Ensure the project containing the DbContext is selected as Default Project
+3) Run:
+   Add-Migration InitLibrarySchema
+4) Then:
+   Update-Database
+
+This will automatically create all tables and relationships inside LibraryDB.
+################# This not include the Stored Procedure you want run this SQL
+IF OBJECT_ID('sp_GetAllBooksWithCategories', 'P') IS NOT NULL
+    DROP PROCEDURE sp_GetAllBooksWithCategories;
+GO
+
+CREATE PROCEDURE sp_GetAllBooksWithCategories
+AS
+BEGIN
+    SELECT
+        b.Id AS BookId,
+        b.Title,
+        b.Author,
+        b.Year,
+        c.Id AS CategoryId,
+        c.Name AS CategoryName
+    FROM Books b
+    LEFT JOIN BookCategories bc ON b.Id = bc.BookId
+    LEFT JOIN Categories c ON bc.CategoryId = c.Id
+    ORDER BY b.Id;
+END;
+GO
+
 ## 🕐 Time Estimation
 Task	Estimated Time	Actual Time Spent
 Backend (Books + Categories CRUD + Stored Procedure)	1-2 Dys
