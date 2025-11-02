@@ -10,16 +10,15 @@ public class UnitOfWork : IUnitOfWork
 	public UnitOfWork(AppDbContext context)
 	{
 		_context = context;
+
 		Books = new EfRepository<Book>(_context);
 		Categories = new EfRepository<Category>(_context);
+		BookCategories = new EfRepository<BookCategory>(_context);
 	}
-	public AppDbContext Context => _context; 
-	public void RemoveBookCategories(IEnumerable<BookCategory> relations)
-	{
-		_context.BookCategories.RemoveRange(relations);
-	}
+	
 	public IRepository<Book> Books { get; }
 	public IRepository<Category> Categories { get; }
+	public IRepository<BookCategory> BookCategories { get; }
 
 	public async Task<int> SaveChangesAsync()
 		=> await _context.SaveChangesAsync();

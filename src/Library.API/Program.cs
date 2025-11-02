@@ -1,4 +1,5 @@
 ﻿using Library.Application.Services;
+using Library.Application.Services.Interfaces;
 using Library.Domain.Interfaces;
 using Library.Infrastructure.Persistence;
 using Library.Infrastructure.Repositories;
@@ -14,9 +15,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<AdoBookRepository>();
+builder.Services.AddScoped<IBooksService, BooksService>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 
-builder.Services.AddScoped<BooksService>();
-builder.Services.AddScoped<CategoriesService>();
 
 builder.Services.AddControllers().AddJsonOptions(x =>
 {

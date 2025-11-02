@@ -1,23 +1,22 @@
 ﻿using Library.Application.DTOs.BookDTOs;
+using Library.Application.Services.Interfaces;
 using Library.Domain.Entities;
 using Library.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace Library.Application.Services;
-public class BooksService
+public class BooksService : IBooksService
 {
 	private readonly IRepository<Book> _booksRepo;
-	private readonly IRepository<Category> _catsRepo;
 	private readonly IUnitOfWork _uow;
 
-	public BooksService(IRepository<Book> booksRepo, IRepository<Category> catsRepo, IUnitOfWork uow)
+	public BooksService(IUnitOfWork uow)
 	{
-		_booksRepo = booksRepo;
-		_catsRepo = catsRepo;
 		_uow = uow;
+		_booksRepo = _uow.Books; 
 	}
 	public async Task<IReadOnlyList<MiniBookDto>> ListAsync()
 	{
-		var books = await _booksRepo.Query().ToListAsync();
+		var books = await _booksRepo.ListAllAsync();
 
 		return books.Select(b => new MiniBookDto(
 			b.Id,
@@ -86,7 +85,6 @@ public class BooksService
 		book.Title = req.Title;
 		book.Author = req.Author;
 		book.Year = req.Year;
-
 		book.BookCategories.Clear();
 
 		if (req.CategoryIds != null && req.CategoryIds.Any())

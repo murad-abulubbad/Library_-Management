@@ -1,14 +1,14 @@
 ﻿using Library.Application.DTOs.BookDTOs;
-using Library.Application.Services;
+using Library.Application.Services.Interfaces;
 using Library.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 namespace Library.API.Controllers;
 public class BooksController
 	: BaseController<BookDto, CreateBook>
 {
-	private readonly BooksService _service;
+	private readonly IBooksService _service;
 
-	public BooksController(BooksService service) : base(service)
+	public BooksController(IBooksService service) : base(service)
 	{
 		_service = service;
 	}

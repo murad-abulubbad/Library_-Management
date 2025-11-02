@@ -4,6 +4,6 @@ public record CreateBook
 	string Title,
 	string Author,
 	int? Year,
-		List<long>? CategoryIds = null 
+	List<long>? CategoryIds = null 
 
 );
