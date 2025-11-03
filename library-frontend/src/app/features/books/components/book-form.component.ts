@@ -58,7 +58,7 @@ export class BookFormComponent implements OnInit {
           title: res.title,
           author: res.author,
           year: res.year,
-          categoryIds: res.categoryIds, // ✅ التصنيفات المختارة مسبقاً
+          categoryIds: res.categoryIds,    
         });
       });
     }

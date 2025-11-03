@@ -3,7 +3,7 @@ using Library.Domain.Entities;
 
 namespace Library.Application.Services.Interfaces;
 
-public interface ICategoriesService 
+public interface ICategoriesService
 {
 	Task<IReadOnlyList<CategoryDto>> ListAsync();
 	Task<Category> CreateAsync(CreateCategory req);

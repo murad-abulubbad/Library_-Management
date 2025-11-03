@@ -112,7 +112,7 @@ public class BooksService : IBooksService
 		var book = await _booksRepo.GetByIdAsync(id);
 		if (book == null) return false;
 
-		_booksRepo.DeleteAsync(book);
+		await _booksRepo.DeleteAsync(book);
 		await _uow.SaveChangesAsync();
 
 		return true;

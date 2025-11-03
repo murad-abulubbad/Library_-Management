@@ -13,12 +13,10 @@ public class UnitOfWork : IUnitOfWork
 
 		Books = new EfRepository<Book>(_context);
 		Categories = new EfRepository<Category>(_context);
-		BookCategories = new EfRepository<BookCategory>(_context);
 	}
 	
 	public IRepository<Book> Books { get; }
 	public IRepository<Category> Categories { get; }
-	public IRepository<BookCategory> BookCategories { get; }
 
 	public async Task<int> SaveChangesAsync()
 		=> await _context.SaveChangesAsync();
